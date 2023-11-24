@@ -2,6 +2,7 @@ import os
 import pickle
 
 from video_signature import VideoSignature
+from video_player import VideoPlayer  # Import the VideoPlayer class
 
 
 def main():
@@ -40,7 +41,12 @@ def main():
     # Get the maximum comparison result from the map and print the name of the database video with the maximum comparison result
     max_comparison_result = max(comparison_results, key=comparison_results.get)
     print(f"The closest match is: {max_comparison_result}")
-
+    print("Displaying Matched Video...")
+    
+    # Create an instance of the VideoPlayer class and play the macthed video
+    matched_video_path = os.path.join('db_videos', max_comparison_result)
+    matched_player = VideoPlayer(video_path=matched_video_path, title="Detected Matched Video")
+    matched_player.play_video()
 
 
 if __name__ == "__main__":
