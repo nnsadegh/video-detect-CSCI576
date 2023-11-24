@@ -30,12 +30,18 @@ def main():
                 db_signatures.append(pickle.load(f))
 
     # Create a VideoSignature object for the query video
-    query_video_path = 'queries/video3_1.mp4'
+    query_video_path = 'queries/video5_1.mp4'
     query_video_signature = VideoSignature(query_video_path).generate_signature()
+    
+    # Extract motion and audio features for the query video
+    # query_video_signature.color_signature.extract_motion_features()
+    query_video_signature.color_signature.extract_audio_features()
 
     # Compare the query video signature with each database video signature and save the results to a map where the key is the name of the database video and the value is the comparison result
     comparison_results = {}
     for db_signature in db_signatures:
+        # db_signature.color_signature.extract_motion_features()
+        db_signature.color_signature.extract_audio_features()
         comparison_results[db_signature.video_name] = query_video_signature.compare(db_signature)
 
     # Get the maximum comparison result from the map and print the name of the database video with the maximum comparison result

@@ -17,9 +17,45 @@ class SubSignature(ABC):
         Implement this method in subclasses to extract specific types of features.
         """
         pass
+    
+    # @abstractmethod
+    # def extract_motion_features(self):
+    #     """
+    #     Abstract method to extract features from the video.
+
+    #     Implement this method in subclasses to extract specific types of features.
+    #     """
+    #     pass
 
     @abstractmethod
+    def extract_audio_features(self):
+        """
+        Abstract method to extract features from the video.
+
+        Implement this method in subclasses to extract specific types of features.
+        """
+        pass
+    
+    @abstractmethod
     def compare(self, other_signature):
+        """
+        Abstract method to compare this signature with another signature.
+
+        :param other_signature: An instance of a subclass of SubSignature to compare with.
+        :return: A value or object representing the comparison result.
+        """
+        pass
+    
+    # def compare_motion(self, other_signature):
+    #     """
+    #     Abstract method to compare this signature with another signature.
+
+    #     :param other_signature: An instance of a subclass of SubSignature to compare with.
+    #     :return: A value or object representing the comparison result.
+    #     """
+    #     pass
+    
+    def compare_audio(self, other_signature):
         """
         Abstract method to compare this signature with another signature.
 
