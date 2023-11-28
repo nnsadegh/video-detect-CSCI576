@@ -1,4 +1,5 @@
-from color_sub_signature import ColorSubSignature  # Ensure this is correctly imported
+from color_sub_signature import ColorSubSignature
+from shot_boundary_detector import ShotBoundaryDetector
 
 
 class VideoSignature:
@@ -12,7 +13,11 @@ class VideoSignature:
         """
         self.video_path = video_path
         self.video_name = video_path.split('/')[-1]  # Extract the video name
-        self.color_signature = ColorSubSignature(video_path)
+        # Use the shot boundary detector to get the shot boundaries timestamps
+        self.shot_boundary_detector = ShotBoundaryDetector(video_path)
+        self.shot_boundaries = self.shot_boundary_detector.get_shot_boundary_timestamps()
+        # Initialize the color signature
+        self.color_signature = ColorSubSignature(self, video_path)
 
     def generate_signature(self):
         """
