@@ -100,10 +100,21 @@ class ShotBoundaryDetector:
                 max_diff_frame = frame
         return max_diff_frame
 
+    """
+    A method that returns a list of tuples with the start and end timestamps of each shot boundary.
+    """
     def get_shot_boundary_timestamps(self):
         shot_boundaries = self.detect_shot_boundaries()
         timestamps = [(start_frame / self.frame_rate, end_frame / self.frame_rate) for start_frame, end_frame in shot_boundaries]
         return timestamps
+
+    """
+    A method that returns a list of tuples with the start and end frame of each shot boundary.
+    """
+    def get_shot_boundary_frames(self):
+        shot_boundaries = self.detect_shot_boundaries()
+        frames = [(start_frame, end_frame) for start_frame, end_frame in shot_boundaries]
+        return frames
 
 
 class Frame:
