@@ -10,29 +10,35 @@ Inspired by the following Github repository: https://github.com/HeliosZhao/Shot-
 class ShotBoundaryDetector:
     def __init__(self, video_path):
         self.video_path = video_path
-        self.cap = cv2.VideoCapture(video_path)
-        self.frame_rate = self.cap.get(cv2.CAP_PROP_FPS)
-        self.frames = []
-        self._read_frames()
+        self.frame_rate = self._get_frame_rate()
+        self.frames = self._read_frames()
+
+    def _get_frame_rate(self):
+        cap = cv2.VideoCapture(self.video_path)
+        frame_rate = cap.get(cv2.CAP_PROP_FPS)
+        cap.release()
+        return frame_rate
 
     def _read_frames(self):
-        success, frame = self.cap.read()
+        cap = cv2.VideoCapture(self.video_path)
+        frames = []
+        success, frame = cap.read()
         i = 0
         while success:
             luv = cv2.cvtColor(frame, cv2.COLOR_BGR2LUV)
             curr_frame = luv
+            diff_sum_mean = 0
             if i > 0:
-                prev_frame = self.frames[-1].luv
+                prev_frame = frames[-1].luv
                 diff = cv2.absdiff(curr_frame, prev_frame)
                 diff_sum = np.sum(diff)
                 diff_sum_mean = diff_sum / (diff.shape[0] * diff.shape[1])
-            else:
-                diff_sum_mean = 0
 
-            self.frames.append(Frame(i, diff_sum_mean, luv))
+            frames.append(Frame(i, diff_sum_mean, luv))
             i += 1
-            success, frame = self.cap.read()
-        self.cap.release()
+            success, frame = cap.read()
+        cap.release()
+        return frames
 
     def detect_shot_boundaries(self):
         possible_frames = []
