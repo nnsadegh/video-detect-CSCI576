@@ -1,3 +1,4 @@
+import sys
 import time
 import cv2
 import hashlib
@@ -66,7 +67,8 @@ class VideoFrameHasher:
         with open(file_path, 'rb') as file:
             self.database = pickle.load(file)
 
-def main():
+
+def main(query_filename):
     hasher = VideoFrameHasher()
 
     # Path to the directory containing database videos
@@ -92,7 +94,6 @@ def main():
         print("Database saved.")
 
     # Path to the query video
-    query_filename = 'video1_1.mp4'
     query_video_path = os.path.join('queries', query_filename)
     start_time = time.time()  # Start time for processing
     match_info = hasher.process_query_video(query_video_path)
@@ -128,4 +129,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])
