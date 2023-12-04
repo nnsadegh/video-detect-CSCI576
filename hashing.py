@@ -60,26 +60,6 @@ class VideoFrameHasher:
         with open(file_path, 'rb') as file:
             self.database = pickle.load(file)
 
-
-from moviepy.editor import VideoFileClip
-from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
-
-class LocalVideoPlayer:
-    def __init__(self, video_path, start_frame):
-        self.video_path = video_path
-        self.start_frame = start_frame
-        self.play_video()
-
-    def play_video(self):
-        # Convert start frame to start time in seconds
-        clip = VideoFileClip(self.video_path)
-        fps = clip.fps  # frames per second
-        start_time = self.start_frame / fps
-
-        # Cut the video from the start_time to its end
-        playing_clip = clip.subclip(start_time, clip.duration)
-        playing_clip.preview()
-
 def main():
     hasher = VideoFrameHasher()
 
@@ -116,7 +96,7 @@ def main():
     if match_info:
         print(f"Match found in '{match_info[0]}' at frame number {match_info[1]} for {query_filename}.")
         # Play the matched video starting from the matched frame
-        LocalVideoPlayer(video_path=match_info[0], start_frame=match_info[1])
+        VideoPlayer(match_info[0], title=match_info[0], start_frame=match_info[1]).play_video()
     else:
         print(f"No match found for {query_filename}.")
     print(f"Processing time: {end_time - start_time:.2f} seconds\n")
