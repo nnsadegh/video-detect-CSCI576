@@ -1,10 +1,8 @@
 import time
-
 import cv2
 import hashlib
 import os
 import pickle
-
 from video_player import VideoPlayer
 
 
@@ -13,6 +11,7 @@ class VideoFrameHasher:
         self.database = {}
 
     def process_video(self, video_path):
+        """ Process a video and store its hashes in the database."""
         cap = cv2.VideoCapture(video_path)
         frame_count = 0
 
@@ -28,14 +27,17 @@ class VideoFrameHasher:
         cap.release()
 
     def compute_hash(self, frame):
+        """ Compute the hash of a given frame."""
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         return hashlib.md5(gray_frame.tobytes()).hexdigest()
 
     def find_match(self, query_frame):
+        """ Find a match for a given query frame in the database."""
         query_hash = self.compute_hash(query_frame)
         return self.database.get(query_hash, None)
 
     def process_query_video(self, query_video_path):
+        """ Process a query video and find a match in the database."""
         cap = cv2.VideoCapture(query_video_path)
         ret, frame = cap.read()
         if not ret:
@@ -96,10 +98,10 @@ def main():
     if match_info:
         print(f"Match found in '{match_info[0]}' at frame number {match_info[1]} for {query_filename}.")
         # Play the matched video starting from the matched frame
-        VideoPlayer(match_info[0], title=match_info[0], start_frame=match_info[1]).play_video()
+        print(f"Processing time: {end_time - start_time:.2f} seconds\n")
+        # VideoPlayer(match_info[0], start_frame=match_info[1]).play_video()
     else:
         print(f"No match found for {query_filename}.")
-    print(f"Processing time: {end_time - start_time:.2f} seconds\n")
 
     # # Path to the directory containing query videos
     # query_directory_path = 'queries'
