@@ -34,6 +34,10 @@ class VideoFrameHasher:
     def find_match(self, query_frame):
         """ Find a match for a given query frame in the database."""
         query_hash = self.compute_hash(query_frame)
+        result = self.database.get(query_hash, None)
+        # Subtract 1 from the frame number because the frame number is 0-indexed
+        if result:
+            return result[0], result[1] - 1
         return self.database.get(query_hash, None)
 
     def process_query_video(self, query_video_path):
