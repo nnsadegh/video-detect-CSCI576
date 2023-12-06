@@ -20,38 +20,40 @@ def process_videos():
     videos_frames = {}
     for file in os.listdir(db_video_path):
         file_path = os.path.join(db_video_path, file)
+        print(file_path)
     #     # Check if the file is an MP4 video
         if os.path.isfile(file_path) and file.lower().endswith('.mp4'):
-            # if file_path == '/Users/piar/CSCI-576Project/Videos/video8.mp4': #This was for testing you can remove this
+            if file_path == '/Users/piar/CSCI-576Project/Videos/video16.mp4': #This was for testing you can remove this
                 #Creating the shotboundary of the video and outputting a list where each shot boundary start and end frame is
-            cap = cv2.VideoCapture(file_path)
-            scene_list = detect(file_path, ContentDetector(threshold=4.0, weights= ContentDetector.Components(delta_hue=0.0, delta_sat=0.0, delta_lum=1.0, delta_edges=0.0)))
-            base_name = os.path.splitext(os.path.basename(file_path))[0]
-            for i, scene in enumerate(scene_list):
-                frames = scene[1].get_frames() - scene[0].get_frames()
-                startframe = scene[0].get_frames()
-                print('Scene %2d: Start %s / Frame %d, End %s / Frame %d' % (
-                    i+1,
-                    scene[0].get_timecode(), scene[0].get_frames(),
-                    scene[1].get_timecode(), scene[1].get_frames(),
-                    ), 'Frames:', frames )
+                cap = cv2.VideoCapture(file_path)
+                scene_list = detect(file_path, ContentDetector(threshold=3.0, weights= ContentDetector.Components(delta_hue=0.0, delta_sat=0.0, delta_lum=1.0, delta_edges=0.0)))
+                base_name = os.path.splitext(os.path.basename(file_path))[0]
+                for i, scene in enumerate(scene_list):
+                    
+                    frames = scene[1].get_frames() - scene[0].get_frames()
+                    startframe = scene[0].get_frames()
+                    print('Scene %2d: Start %s / Frame %d, End %s / Frame %d' % (
+                        i+1,
+                        scene[0].get_timecode(), scene[0].get_frames(),
+                        scene[1].get_timecode(), scene[1].get_frames(),
+                        ), 'Frames:', frames )
 
-            #Creates an image for the first frame of each shot boundary and adds it to an output path
-            cap.set(cv2.CAP_PROP_POS_FRAMES,startframe)
-            ret, frame = cap.read()
-            output_path= f'/Users/piar/CSCI-576Project/Videos/Frame_Path/{base_name}_{startframe}.png'  #CHANGE THIS FOR YOUR LOCAL
-            cv2.imwrite(output_path, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    #             # Creates an image for the first frame of each shot boundary and adds it to an output path
+    #             cap.set(cv2.CAP_PROP_POS_FRAMES,startframe)
+    #             ret, frame = cap.read()
+    #             output_path= f'/Users/piar/CSCI-576Project/Videos/Frame_Path/{base_name}_{startframe}.png'  #CHANGE THIS FOR YOUR LOCAL
+    #             cv2.imwrite(output_path, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
-            #This creates the dictionary Key: number of frames in shot Value: List of image paths where the shot boundary is the same number of frames
-            if frames in videos_frames:
-                        videos_frames[frames].append((startframe, output_path))
-            else:
-                # If the key doesn't exist, create a new array with the current element
-                videos_frames[frames] = [(startframe, output_path)]
+    #             #This creates the dictionary Key: number of frames in shot Value: List of image paths where the shot boundary is the same number of frames
+    #             if frames in videos_frames:
+    #                         videos_frames[frames].append((startframe, output_path))
+    #             else:
+    #                 # If the key doesn't exist, create a new array with the current element
+    #                 videos_frames[frames] = [(startframe, output_path)]
 
-    #Loads dictionary into a pickle file to be accessed later 
-    with open('my_dict.pkl', 'wb') as pickle_file:
-            pickle.dump(videos_frames, pickle_file)
+    # #Loads dictionary into a pickle file to be accessed later 
+    # with open('my_dict.pkl', 'wb') as pickle_file:
+    #         pickle.dump(videos_frames, pickle_file)
 
     # return videos_frames
 
@@ -71,9 +73,9 @@ def compare_images(query_path,video_path):
 def main():
     start_time = time.time()
     # Input query file and create shot boundary
-    query_file_path= '/Users/piar/CSCI-576Project/Queries/video8_1.mp4' #FIX THIS FOR YOUR LOCAL
+    query_file_path= '/Users/piar/CSCI-576Project/video19_1.mp4' #FIX THIS FOR YOUR LOCAL
     cap = cv2.VideoCapture(query_file_path)
-    scene_list = detect(query_file_path, ContentDetector(threshold=3.0, weights= ContentDetector.Components(delta_hue=0.0, delta_sat=0.0, delta_lum=1.0, delta_edges=0.0)))
+    scene_list = detect(query_file_path, ContentDetector(threshold=3.0, weights= ContentDetector.Components(delta_hue=0.0, delta_sat=0.0, delta_lum=1.0, delta_edges=0.0)), show_progress=True)
 
     #Dictonary to find max shot boundary within a query video and store the startframe of this shot
     frameNums = {}
@@ -86,15 +88,16 @@ def main():
             scene[1].get_timecode(), scene[1].get_frames(),
             ), 'Frames:', frames )
         #skip first shot boundary as it might not be the starting boundary in the actual video
-        if startframe!=0 and scene[1].get_timecode() != '00:00:20.000':
+        if startframe!=0 and scene[1].get_timecode() != '00:00:19.967':
             #Store shot boundary in dictionary Key: startframe Value: # of frames in shot
             frameNums[startframe] = frames
 
     #Start frame of the shot within query with most frames
     max_shot_start = max(frameNums, key=lambda k: frameNums[k])    
-    
+    print(max_shot_start)
     #Number of frames for the shot that has max frames in query 
     max_shot_frames = frameNums[max_shot_start]
+    print(max_shot_frames)
    
 
     #Create image of the start frame from max frames
@@ -104,7 +107,7 @@ def main():
     query_image_file= f'/Users/piar/CSCI-576Project/Queries/{max_shot_start}.png'  #FIX TO MATCH YOUR LOCAL
     cv2.imwrite(query_image_file, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
-    #Only call if you need to preprocess videos 
+    # # Only call if you need to preprocess videos 
     process_videos()
 
     #Opens preprocessed dictionary of frames, and start frame image file paths for shots with the same frame count
@@ -116,7 +119,9 @@ def main():
     for startframe, imgpath in frame_match[max_shot_frames]:
          #grabs each image path with the same frame number and compares the starting frame images
          comparison[imgpath] = compare_images(query_image_file,imgpath)
-        #  print(comparison[imgpath] )
+         if comparison[imgpath] ==0:
+            print(imgpath)
+            print(comparison[imgpath])
     
     #Finds the closest image
     best_image = min(comparison, key=lambda k: comparison[k])
@@ -136,6 +141,17 @@ def main():
     end_time = time.time()
     print(f"Function took {end_time - start_time} seconds to execute.")
 
+    cap2 = cv2.VideoCapture('/Users/piar/CSCI-576Project/Videos/video19.mp4')
+    #Create image of the start frame from max frames
+    cap2.set(cv2.CAP_PROP_POS_FRAMES,start_frame)
+    ret, frame2 = cap2.read()
+    #Output path of query start frame image
+    image_file= f'/Users/piar/CSCI-576Project/Queries/{start_frame}.png'  #FIX TO MATCH YOUR LOCAL
+    cv2.imwrite(image_file, cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB))
+    img = cv2.imread(image_file)
+    cv2.imshow("Image", img)
+    cv2.waitKey(0)  # Wait until a key is pressed
+    cv2.destroyAllWindows() 
 
 
 if __name__ == "__main__":
