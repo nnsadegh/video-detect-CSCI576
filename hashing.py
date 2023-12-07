@@ -22,6 +22,7 @@ class VideoFrameHasher:
                 break
 
             hash_value = self.compute_hash(frame)
+            # Store the hash value and the frame number in the database
             self.database[hash_value] = (video_path, frame_count)
             frame_count += 1
 
@@ -29,6 +30,7 @@ class VideoFrameHasher:
 
     def compute_hash(self, frame):
         """ Compute the hash of a given frame."""
+        # Convert the frame to grayscale
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         return hashlib.md5(gray_frame.tobytes()).hexdigest()
 
