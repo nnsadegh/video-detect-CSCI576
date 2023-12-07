@@ -104,28 +104,9 @@ def main(query_filename):
         print(f"Match found in '{match_info[0]}' at frame number {match_info[1]} for {query_filename}.")
         # Play the matched video starting from the matched frame
         print(f"Processing time: {end_time - start_time:.2f} seconds\n")
-        # VideoPlayer(match_info[0], start_frame=match_info[1]).play_video()
+        VideoPlayer(match_info[0], start_frame=match_info[1]).play_video()
     else:
         print(f"No match found for {query_filename}.")
-
-    # # Path to the directory containing query videos
-    # query_directory_path = 'queries'
-    #
-    # # Process each query video in the directory
-    # for filename in os.listdir(query_directory_path):
-    #     if filename.endswith('.mp4'):
-    #         query_video_path = os.path.join(query_directory_path, filename)
-    #
-    #         start_time = time.time()  # Start time for processing
-    #         match_info = hasher.process_query_video(query_video_path)
-    #         end_time = time.time()  # End time for processing
-    #
-    #         # Print the result and processing time
-    #         if match_info:
-    #             print(f"Match found in '{match_info[0]}' at frame number {match_info[1] - 1} for {filename}.")
-    #         else:
-    #             print(f"No match found for {filename}.")
-    #         print(f"Processing time: {end_time - start_time:.2f} seconds\n")
 
 
 if __name__ == "__main__":
