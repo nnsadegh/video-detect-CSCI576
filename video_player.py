@@ -29,9 +29,16 @@ class VideoPlayer:
         self.start_playback_time = None  # To keep track of playback time
 
         self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        
         self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         self.canvas = tk.Canvas(self.root, width=self.width, height=self.height)
+
+        self.cap.set(cv2.CAP_PROP_POS_FRAMES, self.current_frame)
+        ret, frame = self.cap.read()
+        self.photo = self.convert_to_photo(frame)
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.photo)
+
         self.canvas.pack()
 
         self.progress_bar = ttk.Scale(
@@ -130,6 +137,9 @@ class VideoPlayer:
         self.is_playing = False
         self.current_frame = 0
         self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        ret, frame = self.cap.read()
+        self.photo = self.convert_to_photo(frame)
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self.photo)
         self.progress_bar.set(0)
         self.play_video_loop()
         self.player.seek(0)

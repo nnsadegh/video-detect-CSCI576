@@ -106,7 +106,7 @@ def main(query_filename):
         print(f"Match found in '{match_info[0]}' at frame number {match_info[1]} for {query_filename}.")
         # Play the matched video starting from the matched frame
         print(f"Processing time: {end_time - start_time:.2f} seconds\n")
-        VideoPlayer(match_info[0], match_info[0], start_frame=match_info[1]).play_video()
+        VideoPlayer(match_info[0], match_info[0], start_frame=match_info[1])
     else:
         print(f"No match found for {query_filename}.")
 
